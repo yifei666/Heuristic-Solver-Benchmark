@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from solver import solvermethod
 
-def sorting_allpath(allpath_list, g):
+def sorting_allpath_bylatency(allpath_list, g):
     allpath_dict = {}
     output = []
     for path in allpath_list:
@@ -30,11 +30,28 @@ def sorting_allpath(allpath_list, g):
         allpath_dict[(total_latency,total_length)] = path
         
         output = allpath_dict.items()
-        
     return output
-    
 
-def latencyheur(g, nodes, max_latency):
+def sorting_allpath_byweight(allpath_list, g):
+    allpath_dict = {}
+    output = []
+    for path in allpath_list:
+        total_length = 0
+        total_latency = 0
+        for i in range(len(path)-1):
+            source, target = path[i], path[i+1]
+            edge = g[source][target]
+            length = edge['weight']
+            lat = edge['latency']
+            total_length += length
+            total_latency += lat
+        allpath_dict[(total_length,total_latency)] = path
+
+        output = allpath_dict.items()
+
+    return output
+
+def heur_bylatency(g, nodes, max_latency):
     global solution
         #### creating the heuristic model
     time_start=time.time()
@@ -43,7 +60,7 @@ def latencyheur(g, nodes, max_latency):
     for path in nx.all_simple_paths(g, source=0, target=nodes-1):
         allpath_list.append(path)
 
-    sortedlist = sorting_allpath(allpath_list, g)
+    sortedlist = sorting_allpath_bylatency(allpath_list, g)
     solution = "Null"
     for pair in sortedlist:
         if pair[0][0] <= max_latency:
@@ -55,6 +72,27 @@ def latencyheur(g, nodes, max_latency):
     
     return [solution,time_used]
 
+
+def heur_byweight(g, nodes, max_latency):
+    global solution
+    #### creating the heuristic model
+    time_start = time.time()
+    allpath_list = []
+
+    for path in nx.all_simple_paths(g, source=0, target=nodes - 1):
+        allpath_list.append(path)
+
+    sortedlist = sorting_allpath_bylatency(allpath_list, g)
+    solution = "Null"
+    for pair in sortedlist:
+        if pair[0][1] <= max_latency:
+            solution = pair
+            break
+
+    time_end = time.time()
+    time_used = (time_end - time_start) * 1000
+
+    return [solution, time_used]
 def zerolistmaker(n):
     listofzeros = [0] * n
     return listofzeros
@@ -114,7 +152,7 @@ def jsonfilemaker(nodes, inputmatrix, inputdistance, link_list, max_latency, sor
     return [output,time]
     
 def nxgraphgenerator(nodes,p,max_latency,bwlimit):
-    # random.seed(seed)
+    # random.seed(1)
     g = erdos_renyi_graph(nodes,p)
     
     while True:
@@ -217,7 +255,7 @@ def nxgraphgenerator(nodes,p,max_latency,bwlimit):
     print("labels" + str(labels))
     # nx.draw(g, pos, with_labels=labels)
     # nx.draw_networkx_edge_labels(g, pos, edge_labels=labels)
-    latencyheurresult = latencyheur(g,nodes,max_latency)
+    latencyheurresult = heur_bylatency(g,nodes,max_latency)
     sortedanswer = latencyheurresult[0]
     time = latencyheurresult[1]
     
