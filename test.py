@@ -49,7 +49,7 @@ def draw_errorbar(nodes, avglist, std, name):
     
 
     plt.tight_layout()
-    plt.savefig('Heuristic Std Error.png', dpi = 300)
+    # plt.savefig('Heuristic Std Error.png', dpi = 300)
     plt.show()
 
 def draw_comparisionbarplot(nodes, solvertimelist, heurtimelist):
@@ -66,7 +66,7 @@ def draw_comparisionbarplot(nodes, solvertimelist, heurtimelist):
     plt.ylabel("Milliseconds")
     plt.title("Computation Time: Solver Vs Heuristic")
     plt.legend()
-    plt.savefig("Computatoin Time", dpi = 300)
+    # plt.savefig("Computatoin Time", dpi = 300)
     plt.show()
 
 def draw_weightcomparison(nodes, heuravglist, solveravglist):
@@ -86,7 +86,7 @@ def draw_weightcomparison(nodes, heuravglist, solveravglist):
     plt.ylabel("NWeights")
     plt.title("Heuristic VS Solver (Sorted by latency)")
     plt.legend()
-    plt.savefig('Weights comparision.png', dpi = 300)
+    # plt.savefig('Weights comparision.png', dpi = 300)
     plt.show()
     
 
@@ -113,7 +113,7 @@ def draw_errorplotweightplot(nodes,heuravglist, solveravglist, heurstd, solstd):
     ax.set_ylabel('Weight')
     ax.set_title('Weight plot with error bars')
     plt.legend()
-    plt.savefig("errorbar.png", dpi=300)
+    # plt.savefig("errorbar.png", dpi=300)
     
     plt.show()
     
